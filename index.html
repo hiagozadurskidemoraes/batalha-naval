@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Batalha Naval</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================================================
+         TELA 1 - MENU
+    ========================================================== -->
+
+    <section id="tela-menu" class="tela ativa">
+
+        <div class="menu-overlay"></div>
+
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-mark">BN</span>
+
+                <div>
+                    <strong>BATALHA NAVAL</strong>
+                    <small>OPERAÇÃO MARÉ</small>
+                </div>
+            </div>
+
+            <button id="btn-som-menu" class="sound-button" type="button">
+                SOM ON
+            </button>
+        </header>
+
+        <main class="menu-content">
+
+            <div class="menu-heading">
+                <p class="eyebrow">CENTRO DE COMANDO</p>
+
+                <h1>Batalha<br><span>Naval</span></h1>
+
+                <p class="menu-description">
+                    Localize a frota inimiga, calcule seus disparos
+                    e afunde todas as embarcações antes que suas
+                    vidas terminem.
+                </p>
+            </div>
+
+            <form id="form-jogo" class="setup-panel">
+
+                <div class="field-group">
+                    <label for="nome-jogador">COMANDANTE</label>
+
+                    <input
+                        id="nome-jogador"
+                        type="text"
+                        maxlength="18"
+                        autocomplete="off"
+                        placeholder="Digite seu nome"
+                        required
+                    >
+                </div>
+
+                <div class="field-group">
+                    <label for="modo-jogo">MODO DE COMBATE</label>
+
+                    <select id="modo-jogo">
+                        <option value="cpu">Contra a CPU</option>
+                        <option value="amigo">Contra um amigo</option>
+                    </select>
+                </div>
+
+                <div id="campo-amigo" class="field-group hidden">
+
+                    <label for="nome-amigo">SEGUNDO COMANDANTE</label>
+
+                    <input
+                        id="nome-amigo"
+                        type="text"
+                        maxlength="18"
+                        autocomplete="off"
+                        placeholder="Nome do adversário"
+                    >
+
+                </div>
+
+                <div class="field-group">
+
+                    <label for="nivel-jogo">NÍVEL</label>
+
+                    <select id="nivel-jogo">
+                        <option value="facil">Patrulha</option>
+                        <option value="medio" selected>Combate</option>
+                        <option value="dificil">Almirante</option>
+                    </select>
+
+                </div>
+
+                <button class="main-button" type="submit">
+                    <span>INICIAR OPERAÇÃO</span>
+                    <b>→</b>
+                </button>
+
+                <div class="menu-links">
+
+                    <button type="button" id="btn-como-jogar">
+                        COMO JOGAR
+                    </button>
+
+                    <button type="button" id="btn-ranking-menu">
+                        RANKING
+                    </button>
+
+                </div>
+
+            </form>
+
+        </main>
+
+        <footer class="menu-footer">
+            <span>PROTOCOLO BN-10</span>
+            <span>•</span>
+            <span>10 × 10</span>
+            <span>•</span>
+            <span>FROTA ATIVA</span>
+        </footer>
+
+    </section>
+
+
+    <!-- =========================================================
+         TELA 2 - JOGO
+    ========================================================== -->
+
+    <section id="tela-jogo" class="tela">
+
+        <header class="game-header">
+
+            <div class="game-brand">
+                <div class="mini-logo">BN</div>
+
+                <div>
+                    <strong>BATALHA NAVAL</strong>
+                    <small id="status-operacao">
+                        OPERAÇÃO EM ANDAMENTO
+                    </small>
+                </div>
+            </div>
+
+            <div class="game-stats">
+
+                <div class="stat">
+                    <small>PONTOS</small>
+                    <strong id="placar">000</strong>
+                </div>
+
+                <div class="stat">
+                    <small>VIDAS</small>
+                    <strong id="vidas">06</strong>
+                </div>
+
+                <div class="stat">
+                    <small>DISPAROS</small>
+                    <strong id="disparos">00</strong>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="game-layout">
+
+            <!-- Painel esquerdo -->
+
+            <aside class="mission-panel">
+
+                <div class="panel-section">
+
+                    <p class="section-label">COMANDANTE</p>
+
+                    <h2 id="nome-display">HIAGO</h2>
+
+                    <div class="status-line">
+                        <span class="status-dot"></span>
+                        <span id="modo-display">CONTRA CPU</span>
+                    </div>
+
+                </div>
+
+
+                <div class="panel-section">
+
+                    <p class="section-label">OBJETIVO</p>
+
+                    <p class="objective">
+                        Encontre todas as embarcações
+                        inimigas antes que suas vidas
+                        terminem.
+                    </p>
+
+                </div>
+
+
+                <div class="panel-section">
+
+                    <div class="fleet-title">
+
+                        <p class="section-label">FROTA DETECTADA</p>
+
+                        <strong id="navios-restantes">3</strong>
+
+                    </div>
+
+                    <div id="fleet-list" class="fleet-list"></div>
+
+                </div>
+
+
+                <div class="panel-section controls">
+
+                    <button id="btn-som-jogo" class="secondary-button">
+                        SOM: ON
+                    </button>
+
+                    <button id="btn-abandonar" class="danger-button">
+                        ABANDONAR MISSÃO
+                    </button>
+
+                </div>
+
+            </aside>
+
+
+            <!-- Campo de batalha -->
+
+            <section class="battle-area">
+
+                <div class="battle-heading">
+
+                    <div>
+                        <p class="section-label">SETOR DE COMBATE</p>
+
+                        <h1 id="titulo-tabuleiro">
+                            ÁREA DE OPERAÇÕES
+                        </h1>
+                    </div>
+
+                    <div class="radar-status">
+                        <span></span>
+                        RADAR ATIVO
+                    </div>
+
+                </div>
+
+
+                <div class="boards-wrapper">
+
+                    <!-- Tabuleiro principal -->
+
+                    <div class="board-container">
+
+                        <div class="board-title">
+                            <span id="board-label">CAMPO INIMIGO</span>
+                            <small id="turn-label">SEU DISPARO</small>
+                        </div>
+
+                        <div class="coordinate-row">
+                            <span></span>
+                            <span>A</span>
+                            <span>B</span>
+                            <span>C</span>
+                            <span>D</span>
+                            <span>E</span>
+                            <span>F</span>
+                            <span>G</span>
+                            <span>H</span>
+                            <span>I</span>
+                            <span>J</span>
+                        </div>
+
+                        <div id="board-player" class="board"></div>
+
+                    </div>
+
+
+                    <!-- Mini mapa -->
+
+                    <div class="radar-panel">
+
+                        <div class="radar-screen">
+
+                            <div class="radar-ring ring-one"></div>
+                            <div class="radar-ring ring-two"></div>
+                            <div class="radar-ring ring-three"></div>
+
+                            <div class="radar-cross horizontal"></div>
+                            <div class="radar-cross vertical"></div>
+
+                            <div class="radar-sweep"></div>
+
+                            <div class="radar-center"></div>
+
+                            <div class="radar-blip blip-one"></div>
+                            <div class="radar-blip blip-two"></div>
+                            <div class="radar-blip blip-three"></div>
+
+                        </div>
+
+                        <div class="radar-info">
+
+                            <span>
+                                <i></i>
+                                SINAL HOSTIL
+                            </span>
+
+                            <span>
+                                <i></i>
+                                SONAR
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div id="message-area" class="message-area">
+                    Selecione uma posição para disparar.
+                </div>
+
+            </section>
+
+        </main>
+
+    </section>
+
+
+    <!-- =========================================================
+         TELA 3 - RESULTADO / RANKING
+    ========================================================== -->
+
+    <section id="tela-final" class="tela">
+
+        <div class="final-background"></div>
+
+        <main class="final-content">
+
+            <div class="final-header">
+
+                <p class="eyebrow">RELATÓRIO DA OPERAÇÃO</p>
+
+                <h1 id="resultado-titulo">
+                    MISSÃO CONCLUÍDA
+                </h1>
+
+                <p id="resultado-subtitulo">
+                    Operação finalizada.
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <div class="result-player">
+                    <span>COMANDANTE</span>
+                    <strong id="resultado-nome">HIAGO</strong>
+                </div>
+
+                <div class="result-score">
+                    <span>PONTUAÇÃO</span>
+                    <strong id="resultado-pontos">000</strong>
+                </div>
+
+                <div class="result-details">
+
+                    <div>
+                        <span>DISPAROS</span>
+                        <strong id="resultado-disparos">00</strong>
+                    </div>
+
+                    <div>
+                        <span>ACERTOS</span>
+                        <strong id="resultado-acertos">00</strong>
+                    </div>
+
+                    <div>
+                        <span>PRECISÃO</span>
+                        <strong id="resultado-precisao">0%</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ranking-card">
+
+                <div class="ranking-header">
+
+                    <div>
+                        <p class="section-label">REGISTRO</p>
+                        <h2>MAIORES PONTUAÇÕES</h2>
+                    </div>
+
+                    <span>TOP 10</span>
+
+                </div>
+
+                <div id="ranking-list" class="ranking-list"></div>
+
+            </div>
+
+
+            <div class="final-actions">
+
+                <button id="btn-jogar-novamente" class="main-button">
+                    JOGAR NOVAMENTE
+                    <b>→</b>
+                </button>
+
+                <button id="btn-voltar-menu" class="secondary-button">
+                    VOLTAR AO MENU
+                </button>
+
+            </div>
+
+        </main>
+
+    </section>
+
+
+    <!-- =========================================================
+         MODAL - COMO JOGAR
+    ========================================================== -->
+
+    <div id="modal-como-jogar" class="modal hidden">
+
+        <div class="modal-box">
+
+            <button id="btn-fechar-modal" class="modal-close">
+                ×
+            </button>
+
+            <p class="section-label">MANUAL DE OPERAÇÃO</p>
+
+            <h2>Como jogar</h2>
+
+            <div class="instructions">
+
+                <p>
+                    <strong>01</strong>
+                    Escolha uma posição do tabuleiro para disparar.
+                </p>
+
+                <p>
+                    <strong>02</strong>
+                    Água não gera pontos e consome uma vida.
+                </p>
+
+                <p>
+                    <strong>03</strong>
+                    Acertar uma embarcação gera pontos.
+                </p>
+
+                <p>
+                    <strong>04</strong>
+                    Afunde toda a frota para completar a missão.
+                </p>
+
+                <p>
+                    <strong>05</strong>
+                    Quanto maior sua pontuação, melhor sua posição
+                    no ranking.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL - TROCA DE JOGADOR
+    ========================================================== -->
+
+    <div id="modal-troca" class="modal hidden">
+
+        <div class="modal-box pass-box">
+
+            <p class="section-label">CONTROLE DE COMBATE</p>
+
+            <h2 id="troca-titulo">
+                Passe o controle
+            </h2>
+
+            <p id="troca-texto">
+                Prepare-se para o próximo turno.
+            </p>
+
+            <button id="btn-confirmar-troca" class="main-button">
+                CONTINUAR
+                <b>→</b>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
